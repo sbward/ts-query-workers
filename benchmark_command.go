@@ -31,6 +31,12 @@ type BenchmarkCommand struct {
 }
 
 func (c *BenchmarkCommand) Exec(ctx context.Context) error {
+	// Validate concurrency.
+
+	if c.Concurrency <= 0 {
+		return fmt.Errorf("concurrency must be greater than zero (received: %d)", c.Concurrency)
+	}
+
 	queries, err := queriesFromCSV(
 		csv.NewReader(c.CSV),
 		func(q *device.MinMaxCPUQuery) { q.BucketSize = "1m" },
